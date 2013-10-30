@@ -9,5 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface ViewController : UIViewController
+- (IBAction)nc2:(id)sender;
+- (IBAction)c2:(id)sender;
 
+@property (weak, nonatomic) IBOutlet UILabel *nc2Result;
+@property (weak, nonatomic) IBOutlet UILabel *c2Result;
 @end

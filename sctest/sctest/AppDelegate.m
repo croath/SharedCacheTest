@@ -13,8 +13,31 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    [self createEditableCopyOfDatabaseIfNeeded:@"testdb_normal.db"];
+    [self createEditableCopyOfDatabaseIfNeeded:@"testdb_sc.db"];
     return YES;
 }
+
+- (void)createEditableCopyOfDatabaseIfNeeded:(NSString*)name {
+    
+    
+    // First, test for existence.
+    BOOL success;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSError *error;
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *writableDBPath = [documentsDirectory stringByAppendingPathComponent:name];
+    success = [fileManager fileExistsAtPath:writableDBPath];
+    if (success) return;
+    // The writable database does not exist, so copy the default to the appropriate location.
+    NSString *defaultDBPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"testdb.db"];
+    success = [fileManager copyItemAtPath:defaultDBPath toPath:writableDBPath error:&error];
+    if (!success) {
+        NSAssert1(0, @"Failed to create writable database file with message '%@'.", [error localizedDescription]);
+    }
+}
+
 							
 - (void)applicationWillResignActive:(UIApplication *)application
 {
